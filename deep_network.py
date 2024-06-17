@@ -1,12 +1,12 @@
 import tensorflow as tf
 from collections import deque
 import random
-import numpy as np
-from set_quantum import * 
-from agent import circuit_optimization
+from agent_setup import * 
+from quantum_environment import * 
+import numpy as np 
 
 class DQNAgent:
-    def __init__(self, state_space, action_space, learning_rate, discount_factor, epsilon):
+    def __init__(self, state_space, action_space, learning_rate=0.001, discount_factor=0.99, epsilon=0.1):
         self.state_space = state_space
         self.action_space = action_space
         self.lr = learning_rate
@@ -21,11 +21,11 @@ class DQNAgent:
             tf.keras.layers.Dense(24, activation='relu'),
             tf.keras.layers.Dense(self.action_space, activation='linear')
         ])
-        model.compile(optimizer=tf.keras.optimizers.Adam(lr=self.lr), loss='mse')
+        model.compile(optimizer=tf.keras.optimizers.Adam(learning_rate=self.lr), loss='mse')
         return model
 
     def choose_action(self, state):
-        if np.random.rand() < self.epsilon:
+        if np.random.rand() <= self.epsilon:
             return random.randrange(self.action_space)
         q_values = self.model.predict(state)
         return np.argmax(q_values[0])
@@ -42,3 +42,5 @@ class DQNAgent:
             target_f = self.model.predict(state)
             target_f[0][action] = target
             self.model.fit(state, target_f, epochs=1, verbose=0)
+
+dqn_agent = DQNAgent(state_space=100, action_space=2)
