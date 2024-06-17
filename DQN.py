@@ -1,9 +1,11 @@
 import tensorflow as tf
 from collections import deque
 import random
-from agent_setup import * 
-from quantum_environment import * 
-import numpy as np 
+import numpy as np
+
+import tensorflow as tf
+from collections import deque
+import random
 
 class DQNAgent:
     def __init__(self, state_space, action_space, learning_rate=0.001, discount_factor=0.99, epsilon=0.1):
@@ -17,7 +19,8 @@ class DQNAgent:
 
     def build_model(self):
         model = tf.keras.Sequential([
-            tf.keras.layers.Dense(24, input_dim=self.state_space, activation='relu'),
+            tf.keras.layers.Input(shape=(self.state_space,)),
+            tf.keras.layers.Dense(24, activation='relu'),
             tf.keras.layers.Dense(24, activation='relu'),
             tf.keras.layers.Dense(self.action_space, activation='linear')
         ])
@@ -42,5 +45,3 @@ class DQNAgent:
             target_f = self.model.predict(state)
             target_f[0][action] = target
             self.model.fit(state, target_f, epochs=1, verbose=0)
-
-dqn_agent = DQNAgent(state_space=100, action_space=2)

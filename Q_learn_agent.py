@@ -1,7 +1,3 @@
-
-from quantum_environment import * 
-from qiskit import QuantumCircuit, execute
-from qiskit_aer.aerprovider import AerSimulator
 import numpy as np
 
 class QLearningAgent:
@@ -10,6 +6,7 @@ class QLearningAgent:
         self.lr = learning_rate
         self.gamma = discount_factor
         self.epsilon = epsilon
+        self.action_space = action_space
 
     def choose_action(self, state):
         if np.random.rand() < self.epsilon:
@@ -21,5 +18,3 @@ class QLearningAgent:
         predict = self.q_table[state, action]
         target = reward + self.gamma * np.max(self.q_table[next_state])
         self.q_table[state, action] += self.lr * (target - predict)
-
-q_agent = QLearningAgent(state_space=100, action_space=2)
